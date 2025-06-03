@@ -22,9 +22,15 @@
               {% if bookmark_item.favicon_file and bookmark_list.show_favicons %}
                 <img class="favicon" src="{% static bookmark_item.favicon_file %}" alt="">
               {% endif %}
-              <a href="{{ bookmark_item.url }}" target="{{ bookmark_list.link_target }}" rel="noopener">
-                <span>{{ bookmark_item.title }}</span>
-              </a>
+              {%  if bookmark_list.open_snapshot_by_default and bookmark_item.snapshot_url %}
+                  <a href="{{ bookmark_item.snapshot_url }}" target="{{ bookmark_list.link_target }}" rel="noopener">
+                    <span>{{ bookmark_item.title }}</span>
+                  </a>
+              {%  else %}
+                  <a href="{{ bookmark_item.url }}" target="{{ bookmark_list.link_target }}" rel="noopener">
+                    <span>{{ bookmark_item.title }}</span>
+                  </a>
+              {%  endif %}
             </div>
             {% if bookmark_list.show_url %}
               <div class="url-path truncate">

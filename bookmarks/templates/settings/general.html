@@ -110,6 +110,15 @@
             Whether to open bookmarks a new page or in the same page.
           </div>
         </div>
+        <div class="form-group">
+          <label for="{{ form.open_snapshot_by_default.id_for_label }}" class="form-checkbox">
+            {{ form.open_snapshot_by_default }}
+            <i class="form-icon"></i> Open snapshot by default
+          </label>
+          <div class="form-input-hint">
+            Whether to open stored snapshot by default when clicking on the bookmark's title
+          </div>
+        </div>
         <div class="form-group{% if form.items_per_page.errors %} has-error{% endif %}">
           <label for="{{ form.items_per_page.id_for_label }}" class="form-label">Items per page</label>
           {{ form.items_per_page|add_class:"form-input width-25 width-sm-100"|attr:"min:10" }}

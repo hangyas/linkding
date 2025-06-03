@@ -222,6 +222,7 @@ class BookmarkListContext:
         self.show_favicons = user_profile.enable_favicons
         self.show_preview_images = user_profile.enable_preview_images
         self.show_notes = user_profile.permanent_notes
+        self.open_snapshot_by_default = user_profile.open_snapshot_by_default
         self.collapse_side_panel = user_profile.collapse_side_panel
 
     @staticmethod

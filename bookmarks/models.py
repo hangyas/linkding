@@ -405,6 +405,7 @@ class UserProfile(models.Model):
     display_edit_bookmark_action = models.BooleanField(default=True, null=False)
     display_archive_bookmark_action = models.BooleanField(default=True, null=False)
     display_remove_bookmark_action = models.BooleanField(default=True, null=False)
+    open_snapshot_by_default = models.BooleanField(default=False, null=False)
     permanent_notes = models.BooleanField(default=False, null=False)
     custom_css = models.TextField(blank=True, null=False)
     custom_css_hash = models.CharField(blank=True, null=False, max_length=32)
@@ -451,6 +452,7 @@ class UserProfileForm(forms.ModelForm):
             "display_edit_bookmark_action",
             "display_archive_bookmark_action",
             "display_remove_bookmark_action",
+            "open_snapshot_by_default",
             "permanent_notes",
             "default_mark_unread",
             "custom_css",
