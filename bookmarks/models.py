@@ -401,6 +401,7 @@ class UserProfile(models.Model):
     enable_preview_images = models.BooleanField(default=False, null=False)
     display_url = models.BooleanField(default=False, null=False)
     display_view_bookmark_action = models.BooleanField(default=True, null=False)
+    display_reader_mode_bookmark_action = models.BooleanField(default=False, null=False)
     display_edit_bookmark_action = models.BooleanField(default=True, null=False)
     display_archive_bookmark_action = models.BooleanField(default=True, null=False)
     display_remove_bookmark_action = models.BooleanField(default=True, null=False)
@@ -446,6 +447,7 @@ class UserProfileForm(forms.ModelForm):
             "enable_automatic_html_snapshots",
             "display_url",
             "display_view_bookmark_action",
+            "display_reader_mode_bookmark_action",
             "display_edit_bookmark_action",
             "display_archive_bookmark_action",
             "display_remove_bookmark_action",

@@ -79,6 +79,13 @@
                 {% endif %}
                 <span>|</span>
               {% endif %}
+              {% if bookmark_list.show_reader_mode_action and bookmark_item.readable_url %}
+                <a class="weblink" href="{{ bookmark_item.readable_url }}"
+                   target="{{ bookmark_item.profile.bookmark_link_target }}">
+                  Reader mode
+                </a>
+                <span>|</span>
+              {% endif %}
               {# View link is visible for both owned and shared bookmarks #}
               {% if bookmark_list.show_view_action %}
                 <a href="{{ bookmark_item.details_url }}" class="view-action"

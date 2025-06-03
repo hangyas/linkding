@@ -135,6 +135,9 @@ class BookmarkItem:
                 "linkding:assets.view", args=[bookmark.latest_snapshot_id]
             )
             self.snapshot_title = "View latest snapshot"
+            self.readable_url = reverse(
+                "linkding:assets.read", args=[bookmark.latest_snapshot_id]
+            )
         else:
             self.snapshot_url = bookmark.web_archive_snapshot_url
             self.snapshot_title = (
@@ -212,6 +215,7 @@ class BookmarkListContext:
         self.description_max_lines = user_profile.bookmark_description_max_lines
         self.show_url = user_profile.display_url
         self.show_view_action = user_profile.display_view_bookmark_action
+        self.show_reader_mode_action = user_profile.display_reader_mode_bookmark_action
         self.show_edit_action = user_profile.display_edit_bookmark_action
         self.show_archive_action = user_profile.display_archive_bookmark_action
         self.show_remove_action = user_profile.display_remove_bookmark_action
