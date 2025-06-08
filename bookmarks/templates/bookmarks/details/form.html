@@ -13,8 +13,8 @@
       {% endif %}
       <span>{{ details.bookmark.url }}</span>
     </a>
-    {% if details.latest_snapshot %}
-      <a class="weblink" href="{% url 'linkding:assets.read' details.latest_snapshot.id %}"
+    {% if details.bookmark.latest_snapshot_body_id %}
+      <a class="weblink" href="{% url 'linkding:assets.read' details.bookmark.latest_snapshot_body.id %}"
          target="{{ details.profile.bookmark_link_target }}">
         {% if details.show_link_icons %}
           <svg class="favicon" xmlns="http://www.w3.org/2000/svg">

@@ -220,6 +220,9 @@ def create_html_snapshot(request: HttpRequest, bookmark_id: int | str):
     bookmark = access.bookmark_write(request, bookmark_id)
     tasks.create_html_snapshot(bookmark)
 
+def create_readable_html(request: HttpRequest, bookmark_id: int | str):
+    bookmark = access.bookmark_write(request, bookmark_id)
+    tasks._create_readable_asset(bookmark)
 
 def upload_asset(request: HttpRequest, bookmark_id: int | str):
     if settings.LD_DISABLE_ASSET_UPLOAD:
@@ -305,6 +308,8 @@ def handle_action(request: HttpRequest, query: QuerySet[Bookmark] = None):
         return unshare(request, request.POST["unshare"])
     if "create_html_snapshot" in request.POST:
         return create_html_snapshot(request, request.POST["create_html_snapshot"])
+    if "create_readable_html" in request.POST:
+        return create_readable_html(request, request.POST["create_readable_html"])
     if "upload_asset" in request.POST:
         return upload_asset(request, request.POST["upload_asset"])
     if "remove_asset" in request.POST:

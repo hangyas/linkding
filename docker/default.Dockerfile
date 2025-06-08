@@ -114,7 +114,10 @@ RUN apt-get install -y gnupg2 apt-transport-https ca-certificates && \
     echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
     apt-get update && apt-get install -y nodejs
 # install single-file from fork for now, which contains several hotfixes
-RUN npm install -g https://github.com/sissbruecker/single-file-cli/tarball/4c54b3bc704cfb3e96cec2d24854caca3df0b3b6
+RUN npm install -g https://github.com/sissbruecker/single-file-cli/tarball/4c54b3bc704cfb3e96cec2d24854caca3df0b3b6 \
+                   @mozilla/readability@0.6.0 \
+                   jsdom@21.1.0
+
 # copy uBlock
 COPY --from=ublock-build /etc/linkding/uBOLite.chromium.mv3 uBOLite.chromium.mv3/
 # create chromium profile folder for user running background tasks and set permissions

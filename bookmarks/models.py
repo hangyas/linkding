@@ -78,6 +78,13 @@ class Bookmark(models.Model):
         blank=True,
         related_name="latest_snapshot",
     )
+    latest_snapshot_body = models.ForeignKey(
+        "BookmarkAsset",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="latest_snapshot_body",
+    )
 
     @property
     def resolved_title(self):
@@ -115,6 +122,7 @@ def bookmark_deleted(sender, instance, **kwargs):
 class BookmarkAsset(models.Model):
     TYPE_SNAPSHOT = "snapshot"
     TYPE_UPLOAD = "upload"
+    TYPE_READABLE = "readable"
 
     CONTENT_TYPE_HTML = "text/html"
 

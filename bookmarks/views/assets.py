@@ -36,6 +36,7 @@ def view(request, asset_id: int):
 
 def read(request, asset_id: int):
     asset = access.asset_read(request, asset_id)
+    bookmark = access.bookmark_read(request, asset.bookmark_id)
     content = _get_asset_content(asset)
     content = content.decode("utf-8")
 
@@ -44,5 +45,6 @@ def read(request, asset_id: int):
         "bookmarks/read.html",
         {
             "content": content,
+            "bookmark": bookmark
         },
     )

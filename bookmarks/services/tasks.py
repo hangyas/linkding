@@ -306,6 +306,8 @@ def _create_html_snapshot_task(asset_id: int):
         logger.info(
             f"Successfully created HTML snapshot for bookmark. url={asset.bookmark.url}"
         )
+
+        _create_readable_asset(asset.bookmark)
     except Exception as error:
         logger.error(
             f"Failed to HTML snapshot for bookmark. url={asset.bookmark.url}",
@@ -331,3 +333,11 @@ def create_missing_html_snapshots(user: User) -> int:
     create_html_snapshots(list(bookmarks_without_snapshots))
 
     return bookmarks_without_snapshots.count()
+
+@task()
+def _create_readable_asset(bookmark: Bookmark):
+    print("creating asset")
+    asset = assets.create_readable_asset(bookmark)
+
+    print("asset created" + str(asset))
+    assets.create_readable(asset)

@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.utils import timezone, formats
 
 from bookmarks.models import Bookmark, BookmarkAsset
-from bookmarks.services import singlefile
+from bookmarks.services import singlefile, readability
 
 MAX_ASSET_FILENAME_LENGTH = 192
 
@@ -80,6 +80,57 @@ def upload_snapshot(bookmark: Bookmark, html: bytes):
     asset.bookmark.save()
 
     return asset
+
+
+def create_readable_asset(bookmark: Bookmark) -> BookmarkAsset:
+    date_created = timezone.now()
+    timestamp = formats.date_format(date_created, "SHORT_DATE_FORMAT")
+    asset = BookmarkAsset(
+        bookmark=bookmark,
+        asset_type=BookmarkAsset.TYPE_READABLE,
+        date_created=date_created,
+        content_type=BookmarkAsset.CONTENT_TYPE_HTML,
+        display_name=f"Readable snapshot from {timestamp}",
+        status=BookmarkAsset.STATUS_PENDING,
+    )
+    return asset
+
+
+def create_readable(asset: BookmarkAsset):
+    print('create_readable')
+    try:
+        if asset.bookmark.latest_snapshot is None:
+            raise Exception("No snapshot available")
+
+        # Create readable into temporary file
+        temp_filename = _generate_asset_filename(asset, asset.bookmark.url, "readable.tmp")
+        temp_filepath = os.path.join(settings.LD_ASSET_FOLDER, temp_filename)
+        snapshot_path = os.path.join(settings.LD_ASSET_FOLDER, asset.bookmark.latest_snapshot.file)
+        readability.create_readable_html(asset.bookmark.url, snapshot_path, temp_filepath)
+
+        # Store as gzip in asset folder
+        filename = _generate_asset_filename(asset, asset.bookmark.url, "readable.html.gz")
+        filepath = os.path.join(settings.LD_ASSET_FOLDER, filename)
+        with open(temp_filepath, "rb") as temp_file, gzip.open(
+            filepath, "wb"
+        ) as gz_file:
+            shutil.copyfileobj(temp_file, gz_file)
+
+        # Remove temporary file
+        os.remove(temp_filepath)
+
+        asset.status = BookmarkAsset.STATUS_COMPLETE
+        asset.file = filename
+        asset.gzip = True
+        asset.save()
+
+        asset.bookmark.latest_snapshot_body = asset
+        asset.bookmark.date_modified = timezone.now()
+        asset.bookmark.save()
+    except Exception as error:
+        asset.status = BookmarkAsset.STATUS_FAILURE
+        asset.save()
+        raise error
 
 
 def upload_asset(bookmark: Bookmark, upload_file: UploadedFile):
