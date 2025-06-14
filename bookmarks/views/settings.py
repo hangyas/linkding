@@ -94,6 +94,18 @@ def update(request: HttpRequest):
                 messages.success(
                     request, "No missing snapshots found.", "settings_success_message"
                 )
+        if "create_missing_readable_snapshots" in request.POST:
+            count = tasks.create_missing_readable_snapshots(request.user)
+            if count > 0:
+                messages.success(
+                    request,
+                    f"Queued {count} missing readable snapshots. This may take a while...",
+                    "settings_success_message",
+                )
+            else:
+                messages.success(
+                    request, "No missing readable snapshots found.", "settings_success_message"
+                )
 
     return HttpResponseRedirect(reverse("linkding:settings.general"))
 

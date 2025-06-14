@@ -16,11 +16,16 @@ logger = logging.getLogger(__name__)
 def create_readable_html(url: str, snapshot_path: str, filepath: str):
     readability_script_path = './readable.js'
 
+    # Set NODE_PATH to include global node_modules
+    npm_global_path = subprocess.check_output(["npm", "root", "-g"]).decode().strip()
+    env = os.environ.copy()
+    env["NODE_PATH"] = npm_global_path
+
     # concat lists
     args = ['node', readability_script_path] + [url, snapshot_path, filepath]
     try:
         # Use start_new_session=True to create a new process group
-        process = subprocess.Popen(args, start_new_session=True)
+        process = subprocess.Popen(args, env=env, start_new_session=True)
         process.wait(timeout=settings.LD_SINGLEFILE_TIMEOUT_SEC)
 
         # check if the file was created

@@ -334,8 +334,36 @@ def create_missing_html_snapshots(user: User) -> int:
 
     return bookmarks_without_snapshots.count()
 
+def create_missing_readable_snapshots(user: User) -> int:
+    if not is_html_snapshot_feature_active():
+        return 0
+
+    bookmarks = Bookmark.objects.filter(
+        owner=user,
+        bookmarkasset__asset_type=BookmarkAsset.TYPE_SNAPSHOT,
+        bookmarkasset__status=BookmarkAsset.STATUS_COMPLETE
+    ).exclude(
+        bookmarkasset__asset_type=BookmarkAsset.TYPE_READABLE,
+    )
+
+    create_readable_snapshots(list(bookmarks))
+
+    return bookmarks.count()
+
+
+def create_readable_snapshots(bookmark_list: List[Bookmark]):
+    if not is_html_snapshot_feature_active():
+        return
+
+    assets_to_create = []
+    for bookmark in bookmark_list:
+        _create_readable_asset(bookmark)
+
+
+
 @task()
 def _create_readable_asset(bookmark: Bookmark):
+    # TODO maybe this doesn't need to be an async task, processing is pretty fast once we hace the snapshot downlaoded
     print("creating asset")
     asset = assets.create_readable_asset(bookmark)
 
