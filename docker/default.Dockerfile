@@ -120,6 +120,10 @@ RUN npm install -g https://github.com/sissbruecker/single-file-cli/tarball/4c54b
 
 # copy uBlock
 COPY --from=ublock-build /etc/linkding/uBOLite.chromium.mv3 uBOLite.chromium.mv3/
+
+# copy script for readable html
+COPY ./readable.js /etc/linkding/readable.js
+
 # create chromium profile folder for user running background tasks and set permissions
 RUN mkdir -p chromium-profile &&  \
     chown -R www-data:www-data chromium-profile &&  \
