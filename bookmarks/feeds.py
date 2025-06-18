@@ -1,10 +1,13 @@
 import unicodedata
 from dataclasses import dataclass
+import os
+import gzip
 
 from django.contrib.syndication.views import Feed
 from django.db.models import QuerySet, prefetch_related_objects
 from django.http import HttpRequest
 from django.urls import reverse
+from django.conf import settings
 
 from bookmarks import queries
 from bookmarks.models import Bookmark, BookmarkSearch, FeedToken, UserProfile
@@ -54,9 +57,31 @@ class BaseBookmarksFeed(Feed):
         return sanitize(item.resolved_title)
 
     def item_description(self, item: Bookmark):
+        # if item.latest_snapshot_body:
+        #     asset = item.latest_snapshot_body
+        #     filepath = os.path.join(settings.LD_ASSET_FOLDER, asset.file)
+        #
+        #     if not os.path.exists(filepath):
+        #         return sanitize(item.resolved_description)
+        #
+        #     if asset.gzip:
+        #         with gzip.open(filepath, "rb") as f:
+        #             content = f.read()
+        #     else:
+        #         with open(filepath, "rb") as f:
+        #             content = f.read()
+        #
+        #     return content
+
         return sanitize(item.resolved_description)
 
     def item_link(self, item: Bookmark):
+        if item.latest_snapshot_body_id:
+            return reverse(
+                "linkding:assets.read", args=[item.latest_snapshot_body_id]
+            )
+
+        # bookmark_item.readable_url
         return item.url
 
     def item_pubdate(self, item: Bookmark):
