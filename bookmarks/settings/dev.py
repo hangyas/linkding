@@ -14,7 +14,9 @@ DEBUG = True
 # MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 
 INTERNAL_IPS = [
-    "127.0.0.1",
+    # "127.0.0.1",
+    # "0.0.0.0"
+    "192.168.0.45"
 ]
 
 # Allow access through ngrok

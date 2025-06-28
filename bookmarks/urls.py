@@ -4,6 +4,7 @@ from django.urls import re_path
 from django.conf import settings
 
 from bookmarks import feeds, views
+from bookmarks.views.webdav import MyWebDAVResource
 from bookmarks.admin import linkding_admin_site
 from bookmarks.api import routes as api_routes
 
@@ -84,9 +85,10 @@ urlpatterns = [
     path("opensearch.xml", views.opensearch, name="opensearch"),
 
     # webdav
-    path(
-        "webdav",
-        views.
+    re_path(
+        r'^webdav/(?P<path>.*)$',
+        MyWebDAVResource.as_view(),
+        name="bookmarks.webdav",
     )
 ]
 
