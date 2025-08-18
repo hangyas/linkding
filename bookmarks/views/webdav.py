@@ -58,7 +58,7 @@ class WebDAVView(View):
             # }
         )
 
-    def propfind(self, request, path, *args, **kwargs):
+    def propfind(self, request, tab, path, *args, **kwargs):
         return HttpResponse(status=501)  # Not Implemented by default
 
     def proppatch(self, request, *args, **kwargs):
@@ -155,11 +155,69 @@ class MyWebDAVResource(WebDAVView):
         folder = '/webdav' + folder
 
         # Implement PROPFIND response
-        if request.get_full_path() == '/webdav/':
+        if request.get_full_path() == '/webdav/all/':
             bookmarks = Bookmark.objects.exclude(latest_snapshot_body_id__isnull=True)
             print(bookmarks)
             responses = [_bookmark_to_response(b) for b in bookmarks]
 
+            return HttpResponse(
+                """<?xml version="1.0" encoding="utf-8" ?>
+                <D:multistatus xmlns:D="DAV:" xmlns:p="http://apache.org/dav/props/">
+                    <D:response>
+                        <D:href>/webdav/all/</D:href>
+                        <D:propstat>
+                            <D:prop>
+                                <p:resourcetype>
+                                    <D:collection/>
+                                </p:resourcetype>
+                                <p:creationdate>2025-06-21T20:34:35Z</p:creationdate>
+                                <p:getlastmodified>Sat, 21 Jun 2025 20:34:35 GMT</p:getlastmodified>
+                                <p:getetag>"e0-6381ae82aeb33"</p:getetag>
+                                <D:supportedlock></D:supportedlock>
+                                <D:getcontenttype>httpd/unix-directory</D:getcontenttype>
+                            </D:prop>
+                            <D:status>HTTP/1.1 200 OK</D:status>
+                        </D:propstat>
+                    </D:response>
+                    {}
+                </D:multistatus>
+                """.format('\n'.join(responses)),
+                content_type='application/xml; charset="utf-8"',
+                status=207
+            )
+
+        elif request.get_full_path() == '/webdav/unread/':
+            bookmarks = Bookmark.objects.filter(unread=True, latest_snapshot_body_id__isnull=False)
+            print(bookmarks)
+            responses = [_bookmark_to_response(b) for b in bookmarks]
+
+            return HttpResponse(
+                """<?xml version="1.0" encoding="utf-8" ?>
+                <D:multistatus xmlns:D="DAV:" xmlns:p="http://apache.org/dav/props/">
+                    <D:response>
+                        <D:href>/webdav/unread/</D:href>
+                        <D:propstat>
+                            <D:prop>
+                                <p:resourcetype>
+                                    <D:collection/>
+                                </p:resourcetype>
+                                <p:creationdate>2025-06-21T20:34:35Z</p:creationdate>
+                                <p:getlastmodified>Sat, 21 Jun 2025 20:34:35 GMT</p:getlastmodified>
+                                <p:getetag>"e0-6381ae82aeb33"</p:getetag>
+                                <D:supportedlock></D:supportedlock>
+                                <D:getcontenttype>httpd/unix-directory</D:getcontenttype>
+                            </D:prop>
+                            <D:status>HTTP/1.1 200 OK</D:status>
+                        </D:propstat>
+                    </D:response>
+                    {}
+                </D:multistatus>
+                """.format('\n'.join(responses)),
+                content_type='application/xml; charset="utf-8"',
+                status=207
+            )
+
+        elif request.get_full_path() == '/webdav/':
             return HttpResponse(
                 """<?xml version="1.0" encoding="utf-8" ?>
                 <D:multistatus xmlns:D="DAV:" xmlns:p="http://apache.org/dav/props/">
@@ -179,9 +237,42 @@ class MyWebDAVResource(WebDAVView):
                             <D:status>HTTP/1.1 200 OK</D:status>
                         </D:propstat>
                     </D:response>
-                    {}
+                    
+                    <D:response>
+                        <D:href>/webdav/all/</D:href>
+                        <D:propstat>
+                            <D:prop>
+                                <p:resourcetype>
+                                    <D:collection/>
+                                </p:resourcetype>
+                                <p:creationdate>2025-06-21T20:34:35Z</p:creationdate>
+                                <p:getlastmodified>Sat, 21 Jun 2025 20:34:35 GMT</p:getlastmodified>
+                                <p:getetag>"e0-6381ae82aeb34"</p:getetag>
+                                <D:supportedlock></D:supportedlock>
+                                <D:getcontenttype>httpd/unix-directory</D:getcontenttype>
+                            </D:prop>
+                            <D:status>HTTP/1.1 200 OK</D:status>
+                        </D:propstat>
+                    </D:response>
+                    
+                    <D:response>
+                        <D:href>/webdav/unread/</D:href>
+                        <D:propstat>
+                            <D:prop>
+                                <p:resourcetype>
+                                    <D:collection/>
+                                </p:resourcetype>
+                                <p:creationdate>2025-06-21T20:34:35Z</p:creationdate>
+                                <p:getlastmodified>Sat, 21 Jun 2025 20:34:35 GMT</p:getlastmodified>
+                                <p:getetag>"e0-6381ae82aeb34"</p:getetag>
+                                <D:supportedlock></D:supportedlock>
+                                <D:getcontenttype>httpd/unix-directory</D:getcontenttype>
+                            </D:prop>
+                            <D:status>HTTP/1.1 200 OK</D:status>
+                        </D:propstat>
+                    </D:response>
                 </D:multistatus>
-                """.format('\n'.join(responses)),
+                """,
                 content_type='application/xml; charset="utf-8"',
                 status=207
             )
