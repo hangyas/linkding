@@ -135,6 +135,7 @@ class BookmarkItem:
                 "linkding:assets.view", args=[bookmark.latest_snapshot_id]
             )
             self.snapshot_title = "View latest snapshot"
+            self.snapshot_type = "local"
             if bookmark.latest_snapshot_body_id:
                 self.readable_url = reverse(
                     "linkding:assets.read", args=[bookmark.latest_snapshot_body_id]
@@ -144,10 +145,14 @@ class BookmarkItem:
             self.snapshot_title = (
                 "View snapshot on the Internet Archive Wayback Machine"
             )
+            self.snapshot_type = "web archive"
             if not self.snapshot_url:
                 self.snapshot_url = generate_fallback_webarchive_url(
                     bookmark.url, bookmark.date_added
                 )
+
+        self.web_archive_snapshot_url = bookmark.web_archive_snapshot_url
+
         self.favicon_file = bookmark.favicon_file
         self.preview_image_file = bookmark.preview_image_file
         self.is_archived = bookmark.is_archived
