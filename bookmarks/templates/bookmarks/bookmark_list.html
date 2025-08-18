@@ -66,11 +66,37 @@
                 </div>
               {% endif %}
             {% endif %}
+
+              <div style="display: flex; gap: 5px;">
+                  <a href="{{ bookmark_item.url }}"
+                     target="{{ bookmark_list.link_target }}"
+                     style="background: #ddd; padding: 4px 8px;"
+                     rel="noopener">
+                      original
+                  </a>
+                  <a href="{{ bookmark_item.snapshot_url }}"
+                     target="{{ bookmark_list.link_target }}"
+                     style="background: #ddd; padding: 4px 8px;"
+                     rel="noopener">
+                    {{ bookmark_item.snapshot_type }}
+                  </a>
+
+                  {% if bookmark_list.show_reader_mode_action and bookmark_item.readable_url %}
+                    <a href="{{ bookmark_item.readable_url }}"
+                     style="background: #ddd; padding: 4px 8px;"
+                       target="{{ bookmark_item.profile.bookmark_link_target }}">
+                      readable
+                    </a>
+                  {% endif %}
+              </div>
+
             {% if bookmark_item.notes %}
               <div class="notes">
                 <div class="markdown">{% markdown bookmark_item.notes %}</div>
               </div>
             {% endif %}
+
+
             <div class="actions">
               {% if bookmark_item.display_date %}
                 {% if bookmark_item.snapshot_url %}
